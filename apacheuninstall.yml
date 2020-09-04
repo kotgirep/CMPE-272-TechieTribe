@@ -1,0 +1,36 @@
+---
+- hosts: 198.18.134.49
+  remote_user: root
+  become: yes
+  #sudo: yes
+
+  vars:
+
+  tasks:
+    - name: delete html file
+      file:
+        path: /var/ww/html/index.html
+        state: absent
+
+    - name: uninstall apache
+      yum:
+        pkg: httpd
+        state: absent
+
+- hosts: 198.18.134.50
+  remote_user: root
+  become: yes
+  #sudo: yes
+
+  vars:
+
+  tasks:
+    - name: delete html file
+      file:
+        path: /var/ww/html/index1.html
+        state: absent
+
+    - name: uninstall apache
+      yum:
+        pkg: httpd
+        state: absent
