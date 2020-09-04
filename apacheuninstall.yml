@@ -9,7 +9,7 @@
   tasks:
     - name: delete html file
       file:
-        path: /var/ww/html/index.html
+        path: /var/ww/html/index1.html
         state: absent
 
     - name: uninstall apache
