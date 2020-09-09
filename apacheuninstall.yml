@@ -1,36 +1,65 @@
 ---
-- hosts: 198.18.134.49
+- name: install apache,open port 8080,print helloworld from centos1 and centos2
+  hosts: webserver
   remote_user: root
   become: yes
-  #sudo: yes
-
-  vars:
-
   tasks:
-    - name: delete html file
-      file:
-        path: /var/ww/html/index.html
-        state: absent
-
-    - name: uninstall apache
+   - name: Install apache packages
       yum:
-        pkg: httpd
-        state: absent
+         name: httpd
+         state: present
+     tags: deploy_apache
+   - name: task to check httpd is running
+      service:
+        name: httpd
+        state: started
+     tags: deploy_apache
+   - name: Open port 8080 for http access
+      firewalld:
 
-- hosts: 198.18.134.50
+       port: 8080/tcp
+       permanent: true
+       state: enabled
+     tags: deploy_apache
+   - name: changing the port to 8080
+     lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 80" line="Listen 8080" state=present
+     notify: restart httpd
+     tags: deploy_apache
+   - name: task to Restart the firewalld service
+     service:
+       name: firewalld
+       state: restarted
+     tags: deploy_apache
+   - name: Copy custom content to demo file
+     copy:
+        content: "Hello World from {{ inventory_hostname }}"
+        dest: /var/www/html/index.html
+     tags: deploy_apache
+  handlers:
+   - name: restart apache
+     service:
+       name: httpd
+       state: restarted
+     tags: deploy_apache
+
+- name: play to undeploy webserver,delete the data, close the port
+  hosts: webserver
   remote_user: root
-  become: yes
-  #sudo: yes
-
-  vars:
-
   tasks:
-    - name: delete html file
-      file:
-        path: /var/ww/html/index1.html
+   - name: uninstall apache2
+     yum:
+        name: httpd
         state: absent
+     tags: delete_apache
+   - name: delete default index.html file
+     file:
+       path: /var/www/html/index.html
+       state: absent
+     tags: delete_apache
 
-    - name: uninstall apache
-      yum:
-        pkg: httpd
-        state: absent
+   - name: close port 8080
+     firewalld:
+       port: 8080/tcp
+       permanent: true
+       state: disabled
+     tags: delete_apache
