@@ -1,0 +1,30 @@
+---
+- name: Deploy and Undeploy a web server on CentOS1 and CentOS2
+  hosts: webservers
+  remote_user: demouser
+  become: true
+  roles:
+  - role: apache
+    vars:
+      port_value: 8080
+#    tags: [ deploy_server, undeploy_server ]
+  tasks:
+     - set_fact:
+         host_id: 1
+       when: ansible_default_ipv4.address == '198.18.134.49'
+       tags: deploy_server 
+     - set_fact:
+         host_id: 2
+       when: ansible_default_ipv4.address == '198.18.134.50'  
+       tags: deploy_server
+
+     - name: To write index.html
+       copy:
+         content: 'Hello world from CentOS{{host_id}}.'
+         dest: "/var/www/html/index.html"
+         force: yes
+       notify:
+        - restart httpd
+       tags: deploy_server 
+
+

@@ -1,0 +1,20 @@
+---
+# handlers file for /etc/ansible/myplaybook/roles/apache 
+
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: open http port
+  firewalld:
+    port: "{{ port_value }}/tcp"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
+- name: restart httpd
+  service:
+    name: httpd
+    state: restarted

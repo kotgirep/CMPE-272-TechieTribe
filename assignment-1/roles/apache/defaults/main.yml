@@ -1,0 +1,3 @@
+---
+# defaults file for /etc/ansible/myplaybook/roles/apache 
+port_value : 80

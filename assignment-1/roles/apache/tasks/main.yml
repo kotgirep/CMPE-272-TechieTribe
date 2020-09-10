@@ -1,0 +1,33 @@
+---
+# tasks file for /etc/ansible/myplaybook/roles/apache 
+# tasks to deploy web servers
+- name: Install apache
+  yum:
+    name:
+      - httpd
+    state: latest
+  tags: deploy_server
+
+- name: Listen to specified port and notify httpd & firewall
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: "^Listen 80"
+    line: "Listen {{ port_value }}"   #user can define their own port number, with the default being 80
+    state: present
+  notify:
+    - start httpd
+    - open http port
+  tags: deploy_server
+
+# tasks to undeploy web servers
+- name: "Stop httpd service"
+  service: 
+    name: httpd
+    state: stopped
+  tags: undeploy_server
+
+- name: "Uninstall HTTPD/Apache"
+  yum:
+    name: httpd
+    state: absent
+  tags: undeploy_server
