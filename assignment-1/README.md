@@ -6,26 +6,34 @@ Configure Ansible server on ubuntu to deploy a webserver on centos1 and centos2,
 
 
 ## Steps
-* Install Ansible
+* Install Ansible on Ubuntu Server
 ```
-sudo apt-get update
-sudo apt-get install software-properties-common 
-sudo apt-add-repository ppa:ansible/ansible 
-sudo apt-get update 
-sudo apt-get install ansible
+$ sudo apt-get update
+$ sudo apt-get install software-properties-common 
+$ sudo apt-add-repository ppa:ansible/ansible 
+$ sudo apt-get update 
+$ sudo apt-get install ansible
 ```
-* Configure the host file and ping to check the connection
+* Configure the hosts file 
 ```
-ssh-keygen -t rsa
-ssh-copy-id demouser@198.18.134.49
-ssh-copy-id demouser@198.18.134.50
-ansible -m ping all
+$ cat /etc/ansible/hosts
+[webservers]
+198.18.134.49
+198.18.134.50
+```
+* Create rsa key pair and copy the public key to remote hosts
+```
+$ ssh-keygen -t rsa
+$ ssh-copy-id demouser@198.18.134.49
+$ ssh-copy-id demouser@198.18.134.50
+```
+* Run Ansible's built-in ping module to check the connection
+```
+$ ansible -m ping all
 ```
 * Commands to run playbook (with tags) to deploy and undeploy webserver 
 ```
-ansible-playbook -k -K server_playbook.yml --tags "deploy_server"
-ansible-playbook -k -K server_playbook.yml --tags "undeploy_server"
+$ ansible-playbook -k -K server_playbook.yml --tags "deploy_server"
+$ ansible-playbook -k -K server_playbook.yml --tags "undeploy_server"
 ```
-
-
 
