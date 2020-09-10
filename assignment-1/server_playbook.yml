@@ -7,7 +7,6 @@
   - role: apache
     vars:
       port_value: 8080
-#    tags: [ deploy_server, undeploy_server ]
   tasks:
      - set_fact:
          host_id: 1
