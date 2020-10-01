@@ -1,6 +1,6 @@
 Usage:
 -----
-- Application to programatically consume twitter APIS
+- Application to programatically consume twitter APIs
 
 Technologies: 
 -------------
@@ -11,7 +11,7 @@ Application Insights:
 1. This is NodeJs-Express application
 
 
-How to use ShareBox(Beta):
+How to use:
 --------------------------
 1. Clone the Repo
 2. Run Command: npm install
