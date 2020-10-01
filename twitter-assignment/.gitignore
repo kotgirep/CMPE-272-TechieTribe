@@ -60,5 +60,8 @@ typings/
 # next.js build output
 .next
 
+#ignore package-lock.json
+package-lock.json
+
 #ignore twitter-key from config
 config/
