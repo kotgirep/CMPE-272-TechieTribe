@@ -3,11 +3,12 @@ var router = express.Router();
 var request = require("request");
 var Twitter = require("twitter");
 
+require('dotenv').config();
 var client = new Twitter({
-  consumer_key: "",
-  consumer_secret: "",
-  access_token_key: "",
-  access_token_secret: "",
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
 /* GET users listing. */
@@ -16,19 +17,24 @@ router.get("/", function (req, res, next) {
 });
 
 /*[POST] To create a tweet or update status */
-router.post("/", function (req, res, next) {
+// req content-type: JSON
+router.post("/create/", function (req, res, next) {
   var status_message = req.body.tweet_message;
   console.log("trying to print request body: ");
-  console.log(status_message);
+  console.log(req.body);
   client.post("statuses/update", { status: status_message }, function (
     error,
     tweet,
     response
   ) {
     if (error) throw error;
-    console.log(tweet); // Tweet body.
-    console.log(response); // Raw response object.
+    console.log(tweet.id);
+    console.log(tweet.id_str);
+    console.log(tweet.text);
+    //console.log(tweet); // Tweet body.
+    //console.log(response); // Raw response object.
   });
+  res.send("successfully posted tweet");
 });
 
 /*[POST] To do a re-tweet */
@@ -42,15 +48,6 @@ router.post("/:tweetId", function (req, res, next) {
       console.log(tweet);
     }
   });
-});
-
-/*[DELETE] To do delete a tweet */
-router.delete("/:tweet_id", function (req, res, next) {
-  var tweet_to_delete = req.params["tweet_id"];
-  console.log("trying to print tweet ID of tweet to delete: ");
-  console.log(tweet_to_delete);
-
-  //To-Do: add a method to perform deletion of a tweet
 });
 
 module.exports = router;
