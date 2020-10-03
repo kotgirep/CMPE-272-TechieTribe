@@ -28,7 +28,7 @@ router.post("/create/", function (req, res, next) {
     response
   ) {
     if (error) {
-      console.log("Unable to delete tweet for id: " + tweetid + ". Error: " + JSON.stringify(error));
+      console.log("Unable to create tweet! Error: " + JSON.stringify(error));
       return res.status(500).json({
         error: "Unable to post tweet!"
       });
