@@ -12,17 +12,21 @@ var client = new Twitter({
 });
 
 /* Deletes tweet associated with the given tweetid. */
-// content-type: JSON
+// req content-type: JSON
 router.delete('/tweet/', function(req, res, next) {
   var tweetid = req.body.tweetid;
   console.log("Calling twitter delete api for id: " + tweetid);
   client.post("statuses/destroy/" + tweetid, function (error, tweet, response) {
     if (error) {
-      console.log("Unable to delete tweet for id: " +tweetid + ". Error: " + JSON.stringify(error));
-      res.send("Unable to delete tweet!");
+      console.log("Unable to delete tweet! Error: " + JSON.stringify(error));
+      res.status(404).json({
+        error: 'Unable to find tweet!'
+      });
     } else {
-      //console.log(tweet);
-      res.send("Deleted tweet successfully!");
+      console.log('Delete tweet request is successful!');
+      res.status(200).json({
+        message: 'Successfully deleted tweet!'
+      });
     }
   });
 });

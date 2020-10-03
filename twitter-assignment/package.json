@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "mocha --timeout 30000 ./test/*.js --exit" 
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -15,5 +16,11 @@
     "request": "^2.88.2",
     "twitter": "^1.7.1",
     "dotenv": "8.2.0"
+  },
+  "devDependencies": {
+    "mocha-steps": "^1.3.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^8.1.3"
   }
 }

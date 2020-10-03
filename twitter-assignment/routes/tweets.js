@@ -27,14 +27,17 @@ router.post("/create/", function (req, res, next) {
     tweet,
     response
   ) {
-    if (error) throw error;
-    console.log(tweet.id);
+    if (error) {
+      console.log("Unable to delete tweet for id: " + tweetid + ". Error: " + JSON.stringify(error));
+      return res.status(500).json({
+        error: "Unable to post tweet!"
+      });
+    }
+    console.log("Successfully posted tweet!");
     console.log(tweet.id_str);
-    console.log(tweet.text);
     //console.log(tweet); // Tweet body.
-    //console.log(response); // Raw response object.
+    res.status(200).json(tweet);
   });
-  res.send("successfully posted tweet");
 });
 
 /*[POST] To do a re-tweet */
