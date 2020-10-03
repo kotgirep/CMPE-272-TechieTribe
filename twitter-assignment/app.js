@@ -26,6 +26,10 @@ app.use("/user", userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  if (res.headersSent) {
+    return;
+  }
+  // Default error handler needs to be called only if headers were not already sent.
   next(createError(404));
 });
 

@@ -13,7 +13,7 @@ var client = new Twitter({
 
 /* Deletes tweet associated with the given tweetid. */
 // req content-type: JSON
-router.delete('/tweet/', function(req, res, next) {
+function deleteTweetHandler(req, res, next) {
   var tweetid = req.body.tweetid;
   console.log("Calling twitter delete api for id: " + tweetid);
   client.post("statuses/destroy/" + tweetid, function (error, tweet, response) {
@@ -22,14 +22,20 @@ router.delete('/tweet/', function(req, res, next) {
       res.status(404).json({
         error: 'Unable to find tweet!'
       });
+      
     } else {
       console.log('Delete tweet request is successful!');
       res.status(200).json({
         message: 'Successfully deleted tweet!'
       });
+      
     }
+    return next();
   });
-});
+};
+
+router.delete('/tweet/', deleteTweetHandler);
 
 module.exports = router;
+module.exports.deleteTweetHandler = deleteTweetHandler;
 
