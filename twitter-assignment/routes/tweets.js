@@ -3,7 +3,7 @@ var router = express.Router();
 var request = require("request");
 var Twitter = require("twitter");
 
-require('dotenv').config();
+require("dotenv").config();
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -30,7 +30,7 @@ router.post("/create/", function (req, res, next) {
     if (error) {
       console.log("Unable to create tweet! Error: " + JSON.stringify(error));
       return res.status(500).json({
-        error: "Unable to post tweet!"
+        error: "Unable to post tweet!",
       });
     }
     console.log("Successfully posted tweet!");
@@ -47,9 +47,15 @@ router.post("/:tweetId", function (req, res, next) {
   console.log(tweetId);
 
   client.post("statuses/retweet/" + tweetId, function (error, tweet, response) {
-    if (!error) {
-      console.log(tweet);
+    if (error) {
+      console.log("Unable to re-tweet! Error: " + JSON.stringify(error));
+      return res.status(500).json({
+        error: error,
+      });
     }
+    console.log("Successfully re-tweeted !");
+    console.log(tweet.text);
+    res.status(200).json(tweet);
   });
 });
 
