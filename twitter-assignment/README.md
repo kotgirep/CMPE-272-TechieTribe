@@ -34,7 +34,11 @@ TWITTER_ACCESS_TOKEN_SECRET=XXXXXXXXXXXXXX
 ```
 $ npm install
 ```
-4. Run below command to start server.
+4. Run below command to verify all tests are running fine.
+```
+$ npm run test
+```
+5. Run below command to start server.
 ```
 $ npm run
 ```
