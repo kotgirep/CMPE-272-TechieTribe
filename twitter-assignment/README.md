@@ -40,7 +40,7 @@ $ npm run test
 ```
 5. Run below command to start server.
 ```
-$ npm run
+$ npm run start
 ```
 
 
