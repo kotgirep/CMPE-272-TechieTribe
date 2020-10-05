@@ -1,4 +1,4 @@
-// To handling the request/response for different endpoint calls of twitter API's
+// For handling the request/response for different endpoint calls of twitter API's
 //Author : Priti Sharma
 const form = document.querySelectorAll('form'); // grabbing an element on the page
 const errorElement = document.querySelectorAll('.error-message');
