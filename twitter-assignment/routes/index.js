@@ -41,7 +41,36 @@ function searchTweet(req, res, next) {
 
 };
 
-router.get('/search', searchTweet);
+
+//Changed to post by (Priti Sharma)
+router.post('/search', searchTweet);
+
+/*This is to get the current user tweets:
+Author: Priti Sharma*/
+function liveStream(req, res, next) {
+    var noOfTweets = 100;
+    var screenName = process.env.TWITTER_SCREEN_NAME;
+    let params = {
+        screen_name: screenName,
+        count: noOfTweets
+    };
+    client.get('statuses/user_timeline', params, function (error, tweet, response) {
+        if (error) {
+            console.log("Unable to find the user ! Error:" + JSON.stringify(error));
+            res.status(404).json({
+                error: 'Unable to find the tweet !'
+            });
+        } else {
+            console.log('user found !')
+            res.status(200).json(tweet)
+        }
+  	console.log(tweet);
+        return next();
+    });
+};
+router.get('/list', liveStream);
+/*End Change*/
+
 module.exports = router;
 module.exports.searchTweet = searchTweet;
 

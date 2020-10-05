@@ -20,6 +20,7 @@ process.env.TWITTER_CONSUMER_KEY
 process.env.TWITTER_CONSUMER_SECRET
 process.env.TWITTER_ACCESS_TOKEN_KEY
 process.env.TWITTER_ACCESS_TOKEN_SECRET
+process.env.TWITTER_SCREEN_NAME
 ```
 
 An alternate way to set these variables: create a .env file in the project folder and set values as given below
@@ -28,6 +29,7 @@ TWITTER_CONSUMER_KEY=XXXXXXXXXXXXXX
 TWITTER_CONSUMER_SECRET=XXXXXXXXXXXXXX
 TWITTER_ACCESS_TOKEN_KEY=XXXXXXXXXXXXXX
 TWITTER_ACCESS_TOKEN_SECRET=XXXXXXXXXXXXXX
+TWITTER_SCREEN_NAME=XXXXXXXXXXXXXXX
 ```
 
 3. Run below command to install the dependencies in the local node_modules folder.
