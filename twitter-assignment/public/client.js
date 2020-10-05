@@ -106,61 +106,6 @@ form[1].addEventListener('submit', (event) => {
   }
 });
 
-//This to manipulate data from form 3: Delete Tweets
-form[2].addEventListener('submit', (event) => {
-  event.preventDefault();
-  const formData = new FormData(form[2]);
-  const tweetID = formData.get('tweetID');
-
-  if (tweetID.trim()) {
-    errorElement[2].style.display = 'none';
-    form[2].style.display = 'none';
-    loadingElement.style.display = '';
-
-    const tweetDelete = {
-      tweetid: tweetID,
-    };
-
-    fetch('http://localhost:3000/tweets/destroy/', {
-      method: 'DELETE',
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      body: JSON.stringify(tweetDelete),
-      headers: {
-        'content-type': 'application/json',
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          const contentType = response.headers.get('content-type');
-          if (contentType.includes('json')) {
-            return response
-              .json()
-              .then((error) => Promise.reject(error.message));
-          } else {
-            return response.text().then((message) => Promise.reject(message));
-          }
-        }
-      })
-      .then(() => {
-        form[2].reset();
-        setTimeout(() => {
-          form[2].style.display = '';
-        }, 300);
-        listAllTweets();
-      })
-      .catch((errorMessage) => {
-        form[2].style.display = '';
-        errorElement[2].textContent = errorMessage;
-        errorElement[2].style.display = '';
-        loadingElement.style.display = 'none';
-      });
-  } else {
-    errorElement[2].textContent = 'Name and content are required!';
-    errorElement[2].style.display = '';
-  }
-});
 
 function deleteTweet2(tweetID) {
   alert(tweetID);
@@ -250,62 +195,41 @@ function reTweet(tweetID) {
   }
 }
 
-function loadMore() {
-  skip += limit;
-  listAllTweets(false);
-}
 
-function listAllTweets(reset = true) {
-  loading = true;
-  if (reset) {
-    tweetsElement.innerHTML = '';
-    skip = 0;
-    finished = false;
-  }
-
-  fetch('http://localhost:3000/index/list')
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result.statuses);
-      console.log(result);
-      result.forEach((status) => {
-        const div = document.createElement('div');
-
-        const header = document.createElement('h6');
-        header.textContent = status.user.name;
-
-        const header1 = document.createElement('small');
-        header1.textContent = status.user.screen_name;
-
-        const contents = document.createElement('p');
-        contents.textContent = status.text;
-
-        const date = document.createElement('small');
-        date.textContent =
-          new Date(status.created_at) + ' ID: ' + status.id_str;
-
-        div.appendChild(header);
-        //div.appendChild(header1);
-        div.appendChild(contents);
-        div.appendChild(date);
-
-        tweetsElement.appendChild(div);
-      });
-      loadingElement.style.display = 'none';
-      if (!result.has_more) {
-        loadMoreElement.style.visibility = 'hidden';
-        finished = true;
-      } else {
-        loadMoreElement.style.visibility = 'visible';
+function likeTweet(tweetID) {
+  if (tweetID.trim()) {
+    loadingElement.style.display = '';
+    
+    var url = 'http://localhost:3000/tweets/like/' + tweetID; 
+    fetch(url, {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'content-type': 'application/json'
       }
-      loading = false;
+    }).then(response => {      
+      if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType.includes('json')) {
+          return response.json().then(error => Promise.reject(error.message));
+        } else {
+          return response.text().then(message => Promise.reject(message));
+        }
+      }
+    }).then(() => {
+      listAllLikedTweets();
+    }).catch(errorMessage => {
+      errorElement[2].textContent = errorMessage;
+      errorElement[2].style.display = '';
+      loadingElement.style.display = 'none';
     });
-}
-
-function loadMore() {
-  skip += limit;
-  listAllTweets(false);
-}
+  } else {
+    errorElement[2].textContent = 'Name and content are required!';
+    errorElement[2].style.display = '';
+  }
+};
 
 function listAllTweets(reset = true) {
   loading = true;
@@ -316,17 +240,17 @@ function listAllTweets(reset = true) {
   }
 
   fetch('http://localhost:3000/index/list')
-    .then((response) => response.json())
-    .then((result) => {
+  .then(response => response.json())
+    .then(result => {
       console.log(result.statuses);
       console.log(result);
-      result.forEach((status) => {
+      result.forEach(status => {
         const div = document.createElement('div');
 
         const header = document.createElement('h5');
         header.textContent = status.user.name;
-
-        const header1 = document.createElement('small');
+        
+	      const header1 = document.createElement('small');
         header1.textContent = status.user.screen_name;
 
         const contents = document.createElement('p');
@@ -335,26 +259,37 @@ function listAllTweets(reset = true) {
         const date = document.createElement('small');
         date.textContent = new Date(status.created_at);
 
-        var btn = document.createElement('button');
-        btn.style = 'float: right; border:none;';
-        btn.setAttribute('tweed-id', status.id_str);
-        btn.addEventListener('click', function () {
-          deleteTweet(this.getAttribute('tweed-id'));
+        var btn = document.createElement("button");
+        btn.style = "float: right; border:none;";
+        btn.setAttribute("tweed-id", status.id_str);
+        btn.addEventListener("click", function() {
+          deleteTweet(this.getAttribute("tweed-id"));
         });
+        var btn1 = document.createElement("button");
+        btn1.style = "float: right; border:none;";
+        btn1.setAttribute("tweed-id", status.id_str);
+        btn1.addEventListener("click", function() {
+          likeTweet(this.getAttribute("tweed-id"));
+        });
+        
+	var iconspan1 = document.createElement("span");
+        iconspan1.style.color = "#00B7FF";
+        iconspan1.style.fontSize = "20px";
+        iconspan1.setAttribute("class", "glyphicon glyphicon-heart");
+        btn1.appendChild(iconspan1);
 
-        var btn2 = document.createElement('button');
+        var iconspan = document.createElement("span");
+        iconspan.style.color = "#00B7FF";
+        iconspan.style.fontSize = "20px";
+        iconspan.setAttribute("class", "glyphicon glyphicon-trash");
+        btn.appendChild(iconspan);
+
+	var btn2 = document.createElement('button');
         btn2.style = 'float: right; border:none;';
         btn2.setAttribute('tweed-id', status.id_str);
         btn2.addEventListener('click', function () {
           reTweet(this.getAttribute('tweed-id'));
         });
-
-        var iconspan = document.createElement('span');
-        iconspan.style.color = '#00B7FF';
-        iconspan.style.fontSize = '20px';
-        iconspan.setAttribute('class', 'glyphicon glyphicon-trash');
-
-        btn.appendChild(iconspan);
 
         var iconspan2 = document.createElement('span');
         iconspan2.style.color = '#00B7FF';
@@ -365,7 +300,9 @@ function listAllTweets(reset = true) {
 
         div.appendChild(header);
         div.appendChild(btn);
+        div.appendChild(btn1);
         div.appendChild(btn2);
+	
         div.appendChild(contents);
         div.appendChild(date);
 
@@ -383,6 +320,7 @@ function listAllTweets(reset = true) {
     });
 }
 
+
 function searchAllTweets(noOfTweets, searchString, reset = true) {
   loading = true;
   if (reset) {
@@ -390,26 +328,25 @@ function searchAllTweets(noOfTweets, searchString, reset = true) {
     skip = 0;
     finished = false;
   }
-  const searchJSON = {
-    search_message: searchString,
-    search_count: noOfTweets,
-  };
-
-  fetch('http://localhost:3000/index/search', {
-    method: 'POST',
-    mode: 'cors', // no-cors, *cors, same-origin
+    const searchJSON = {
+      search_message: searchString,
+      search_count: noOfTweets
+    };
+   
+    fetch('http://localhost:3000/index/search', {
+      method: 'POST',
+      mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
-    body: JSON.stringify(searchJSON),
-    headers: {
-      'content-type': 'application/json',
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
+      body: JSON.stringify(searchJSON),
+      headers: {
+        'content-type': 'application/json'
+      }
+  }).then(response => response.json())
+    .then(result => {
       console.log(result.statuses);
       console.log(result);
-      result.statuses.forEach((status) => {
+      result.statuses.forEach(status => {
         const div = document.createElement('div');
 
         const header = document.createElement('h5');
@@ -419,9 +356,51 @@ function searchAllTweets(noOfTweets, searchString, reset = true) {
         contents.textContent = status.text;
 
         const date = document.createElement('small');
-        date.textContent = new Date(status.created_at) + ' ID: ' + status.id;
+        date.textContent = new Date(status.created_at) +' ID: ' + status.id;
+        
+	var btn = document.createElement("button");
+        btn.style = "float: right; border:none;";
+        btn.setAttribute("tweed-id", status.id_str);
+        btn.addEventListener("click", function() {
+          deleteTweet(this.getAttribute("tweed-id"));
+        });
+        var btn1 = document.createElement("button");
+        btn1.style = "float: right; border:none;";
+        btn1.setAttribute("tweed-id", status.id_str);
+        btn1.addEventListener("click", function() {
+          likeTweet(this.getAttribute("tweed-id"));
+        });
+        
+	var iconspan1 = document.createElement("span");
+        iconspan1.style.color = "#00B7FF";
+        iconspan1.style.fontSize = "20px";
+        iconspan1.setAttribute("class", "glyphicon glyphicon-heart");
+        btn1.appendChild(iconspan1);
+
+        var iconspan = document.createElement("span");
+        iconspan.style.color = "#00B7FF";
+        iconspan.style.fontSize = "20px";
+        iconspan.setAttribute("class", "glyphicon glyphicon-trash");
+        btn.appendChild(iconspan);
+
+	var btn2 = document.createElement('button');
+        btn2.style = 'float: right; border:none;';
+        btn2.setAttribute('tweed-id', status.id_str);
+        btn2.addEventListener('click', function () {
+          reTweet(this.getAttribute('tweed-id'));
+        });
+
+        var iconspan2 = document.createElement('span');
+        iconspan2.style.color = '#00B7FF';
+        iconspan2.style.fontSize = '20px';
+        iconspan2.setAttribute('class', 'glyphicon glyphicon-retweet');
+
+        btn2.appendChild(iconspan2);
+
 
         div.appendChild(header);
+        div.appendChild(btn1);
+        div.appendChild(btn2);
         div.appendChild(contents);
         div.appendChild(date);
 
@@ -437,3 +416,107 @@ function searchAllTweets(noOfTweets, searchString, reset = true) {
       loading = false;
     });
 }
+
+
+function listAllLikedTweets(reset = true) {
+  loading = true;
+  if (reset) {
+    tweetsElement.innerHTML = '';
+    skip = 0;
+    finished = false;
+  }
+    const tweet1 = {
+      search_message: 'saurabh',
+      search_count:1
+    };
+
+  fetch('http://localhost:3000/index/likes')
+  .then(response => response.json())
+    .then(result => {
+      console.log(result.statuses);
+      console.log(result);
+      result.forEach(status => {
+        const div = document.createElement('div');
+
+        const header = document.createElement('h6');
+        header.textContent = status.user.name;
+        
+	const header1 = document.createElement('small');
+        header1.textContent = status.user.screen_name;
+
+        const contents = document.createElement('p');
+        contents.textContent = status.text;
+
+        const date = document.createElement('small');
+        date.textContent = new Date(status.created_at) +' ID: ' + status.id_str;
+
+	var btn = document.createElement("button");
+        btn.style = "float: right; border:none;";
+        btn.setAttribute("tweed-id", status.id_str);
+        btn.addEventListener("click", function() {
+          deleteTweet(this.getAttribute("tweed-id"));
+        });
+        var btn1 = document.createElement("button");
+        btn1.style = "float: right; border:none;";
+        btn1.setAttribute("tweed-id", status.id_str);
+        btn1.addEventListener("click", function() {
+          likeTweet(this.getAttribute("tweed-id"));
+        });
+        
+	var iconspan1 = document.createElement("span");
+        iconspan1.style.color = "#00B7FF";
+        iconspan1.style.fontSize = "20px";
+        iconspan1.setAttribute("class", "glyphicon glyphicon-heart");
+        btn1.appendChild(iconspan1);
+
+        var iconspan = document.createElement("span");
+        iconspan.style.color = "#00B7FF";
+        iconspan.style.fontSize = "20px";
+        iconspan.setAttribute("class", "glyphicon glyphicon-trash");
+        btn.appendChild(iconspan);
+
+	var btn2 = document.createElement('button');
+        btn2.style = 'float: right; border:none;';
+        btn2.setAttribute('tweed-id', status.id_str);
+        btn2.addEventListener('click', function () {
+          reTweet(this.getAttribute('tweed-id'));
+        });
+
+        var iconspan2 = document.createElement('span');
+        iconspan2.style.color = '#00B7FF';
+        iconspan2.style.fontSize = '20px';
+        iconspan2.setAttribute('class', 'glyphicon glyphicon-retweet');
+
+        btn2.appendChild(iconspan2);
+
+
+        div.appendChild(header);
+        div.appendChild(btn);
+        div.appendChild(btn1);
+        div.appendChild(btn2);
+        div.appendChild(contents);
+        div.appendChild(date);
+
+        tweetsElement.appendChild(div);
+      });
+      loadingElement.style.display = 'none';
+      if (!result.has_more) {
+        loadMoreElement.style.visibility = 'hidden';
+        finished = true;
+      } else {
+        loadMoreElement.style.visibility = 'visible';
+      }
+      loading = false;
+    });
+}
+
+function loadMore() {
+  skip += limit;
+  listAllTweets(false);
+}
+
+
+
+
+
+

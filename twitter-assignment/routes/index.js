@@ -64,11 +64,37 @@ function liveStream(req, res, next) {
             console.log('user found !')
             res.status(200).json(tweet)
         }
-  	console.log(tweet);
+  	//console.log(tweet);
         return next();
     });
 };
 router.get('/list', liveStream);
+
+/* This is to get the liked tweets*/
+
+function getLikes(req, res, next) {
+    var noOfTweets = 100;
+    var screenName = process.env.TWITTER_SCREEN_NAME;
+    let params = {
+        screen_name: screenName,
+        count: noOfTweets
+    };
+    client.get('favorites/list', params, function (error, tweet, response) {
+        if (error) {
+            console.log("Unable to find the user ! Error:" + JSON.stringify(error));
+            res.status(404).json({
+                error: 'Unable to find the tweet !'
+            });
+        } else {
+            console.log('user found !')
+            res.status(200).json(tweet)
+        }
+        console.log(tweet);
+        return next();
+    });
+};
+router.get('/likes', getLikes);
+
 /*End Change*/
 
 module.exports = router;
