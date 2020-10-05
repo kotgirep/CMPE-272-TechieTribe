@@ -13,7 +13,7 @@ var client = new Twitter({
 
 /* Search tweet associated with the given 'search word' and 'count' - returns the no of tweets based on count
  req content-type: JSON
-Author: Supriya Meduri */
+By: Supriya Meduri */
 
 
 function searchTweet(req, res, next) {
