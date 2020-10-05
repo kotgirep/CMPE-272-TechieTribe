@@ -63,8 +63,8 @@ router.post("/:tweetId", function (req, res, next) {
  */
 router.post("/like/:tweetId", function (req, res) {
     var tweetId = req.params["tweetId"];
-    console.log("tweet ID of tweet to favourite ");
-    console.log(tweetId);
+    //console.log("tweet ID of tweet to favourite ");
+    //console.log(tweetId);
 
     client.post("favorites/create", {id: tweetId}, function (
         error,
