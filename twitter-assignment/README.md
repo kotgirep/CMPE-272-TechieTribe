@@ -44,7 +44,10 @@ $ npm run test
 ```
 $ npm run start
 ```
-
+6. In a Web-Browser (to load up the UI):
+```
+http://localhost:3000
+```
 
 Team members:
 -------------

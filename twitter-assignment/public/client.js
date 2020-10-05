@@ -1,11 +1,10 @@
-console.log('Hello World!');
-
+// For handling the request/response for different endpoint calls of twitter API's
+//Author : Priti Sharma
 const form = document.querySelectorAll('form'); // grabbing an element on the page
 const errorElement = document.querySelectorAll('.error-message');
 const loadingElement = document.querySelector('.loading');
 const tweetsElement = document.querySelector('.tweets');
 const loadMoreElement = document.querySelector('#loadMore');
-//const API_URL = 'http://localhost:3000';
 const API_URL = 'http://localhost:3000/';
 
 let skip = 0;

@@ -8,6 +8,10 @@ let should = chai.should()
 let expect = chai.expect
 const mock = require('./service-mock')
 
+/*[GET] Unit Test for search functionality
+ By: Supriya Meduri
+ */
+
 describe('SearchTweet', function () {
     it('should return 200 if search is successful', done => {
         var request = httpMocks.createRequest({
