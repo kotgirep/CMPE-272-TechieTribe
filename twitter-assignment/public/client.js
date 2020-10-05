@@ -15,7 +15,7 @@ let finished = false;
 console.log(form);
 errorElement[0].style.display = 'none';
 errorElement[1].style.display = 'none';
-errorElement[2].style.display = 'none';
+// errorElement[2].style.display = 'none';
 
 document.addEventListener('scroll', () => {
   const rect = loadMoreElement.getBoundingClientRect();
@@ -154,6 +154,48 @@ form[2].addEventListener('submit', (event) => {
   }
 });
 
+function deleteTweet2(tweetID) {
+  alert(tweetID);
+}
+
+function deleteTweet(tweetID) {
+  if (tweetID.trim()) {
+    loadingElement.style.display = '';
+
+    const tweetDelete = {
+      tweetid:tweetID
+    };
+    
+    fetch('http://localhost:3000/tweets/destroy/', {
+      method: 'DELETE',
+      mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+      body: JSON.stringify(tweetDelete),
+      headers: {
+        'content-type': 'application/json'
+      }
+    }).then(response => {      
+      if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType.includes('json')) {
+          return response.json().then(error => Promise.reject(error.message));
+        } else {
+          return response.text().then(message => Promise.reject(message));
+        }
+      }
+    }).then(() => {
+      listAllTweets();
+    }).catch(errorMessage => {
+      errorElement[2].textContent = errorMessage;
+      errorElement[2].style.display = '';
+      loadingElement.style.display = 'none';
+    });
+  } else {
+    errorElement[2].textContent = 'Name and content are required!';
+    errorElement[2].style.display = '';
+  }
+};
 
 function loadMore() {
   skip += limit;
@@ -167,10 +209,6 @@ function listAllTweets(reset = true) {
     skip = 0;
     finished = false;
   }
-    const tweet1 = {
-      search_message: 'saurabh',
-      search_count:1
-    };
 
   fetch('http://localhost:3000/index/list')
   .then(response => response.json())
@@ -222,10 +260,6 @@ function listAllTweets(reset = true) {
     skip = 0;
     finished = false;
   }
-    const tweet1 = {
-      search_message: 'saurabh',
-      search_count:1
-    };
 
   fetch('http://localhost:3000/index/list')
   .then(response => response.json())
@@ -238,17 +272,30 @@ function listAllTweets(reset = true) {
         const header = document.createElement('h5');
         header.textContent = status.user.name;
         
-	const header1 = document.createElement('small');
+	      const header1 = document.createElement('small');
         header1.textContent = status.user.screen_name;
 
         const contents = document.createElement('p');
         contents.textContent = status.text;
 
         const date = document.createElement('small');
-        date.textContent = new Date(status.created_at) +' ID: ' + status.id_str;
+        date.textContent = new Date(status.created_at);
+
+        var btn = document.createElement("button");
+        btn.style = "float: right; border:none;";
+        btn.setAttribute("tweed-id", status.id_str);
+        btn.addEventListener("click", function() {
+          deleteTweet(this.getAttribute("tweed-id"));
+        });
+
+        var iconspan = document.createElement("span");
+        iconspan.style.color = "#00B7FF";
+        iconspan.style.fontSize = "20px";
+        iconspan.setAttribute("class", "glyphicon glyphicon-trash");
+        btn.appendChild(iconspan);
 
         div.appendChild(header);
-        //div.appendChild(header1);
+        div.appendChild(btn);
         div.appendChild(contents);
         div.appendChild(date);
 
