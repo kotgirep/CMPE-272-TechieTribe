@@ -83,4 +83,34 @@ router.post("/like/:tweetId", function (req, res) {
   });
 });
 
+
+/* 
+Deletes tweet associated with the given tweetid. 
+Author: Bhavya Lalithya Tetali
+*/
+function deleteTweetHandler(req, res, next) {
+  var tweetid = req.body.tweetid;
+  console.log("Calling twitter delete api for id: " + tweetid);
+  client.post("statuses/destroy/" + tweetid, function (error, tweet, response) {
+    if (error) {
+      console.log("Unable to delete tweet! Error: " + JSON.stringify(error));
+      res.status(404).json({
+        error: 'Unable to find tweet!'
+      });
+      
+    } else {
+      console.log('Delete tweet request is successful!');
+      res.status(200).json({
+        message: 'Successfully deleted tweet!'
+      });
+      
+    }
+    return next();
+  });
+};
+
+router.delete('/destroy/', deleteTweetHandler);
+
 module.exports = router;
+module.exports.deleteTweetHandler = deleteTweetHandler;
+

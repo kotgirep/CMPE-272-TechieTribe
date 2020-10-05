@@ -1,13 +1,17 @@
+/* 
+Unit test for deleteTweetHandler in routes/tweets.js
+Author: Bhavya Lalithya Tetali
+*/
 let nock = require('nock');
 let Twitter = require('twitter');
 let httpMocks = require('node-mocks-http');
 let express = require("express");
-let user = require('../../routes/user');
+let tweets = require('../../routes/tweets');
 let chai = require('chai')
 let should = chai.should()
 let expect = chai.expect
 
-describe('UserTweet', function() {
+describe('DeleteTweet', function() {
     it('should return 200 if delete is successful', done => {
         var request = httpMocks.createRequest({
             body: {
@@ -23,7 +27,7 @@ describe('UserTweet', function() {
             ;
 
         // anonymous function with done() instruction, should be send as "next".
-        user.deleteTweetHandler(request, response, function () {
+        tweets.deleteTweetHandler(request, response, function () {
             expect(response.statusCode).to.equal(200);
             expect(response._getJSONData().message).to.equal('Successfully deleted tweet!');
             done();
@@ -47,7 +51,7 @@ describe('UserTweet', function() {
             ;
 
         // anonymous function with done() instruction, should be send as "next".
-        user.deleteTweetHandler(request, response, function () {
+        tweets.deleteTweetHandler(request, response, function () {
             expect(response.statusCode).to.equal(404);
             expect(response._getJSONData().error).to.equal('Unable to find tweet!');
             done();

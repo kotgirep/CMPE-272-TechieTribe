@@ -119,7 +119,7 @@ form[2].addEventListener('submit', (event) => {
       tweetid:tweetID
     };
     
-    fetch('http://localhost:3000/user/tweet/', {
+    fetch('http://localhost:3000/tweets/destroy/', {
       method: 'DELETE',
       mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

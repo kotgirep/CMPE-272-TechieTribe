@@ -24,9 +24,13 @@ describe('TweetService', () => {
           })
       })
 
+      /*
+      Integration test for deleting a tweet. 
+      Author: Bhavya Lalithya Tetali
+      */
     it('delete a tweet', done => {
         chai.request(server)
-          .delete(`/user/tweet/`)
+          .delete(`/tweets/destroy/`)
           .set('content-type', 'application/json')
           .send({tweetid: tweet.id_str})
           .end((err, res) => {
