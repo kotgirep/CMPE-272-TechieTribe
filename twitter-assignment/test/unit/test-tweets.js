@@ -21,6 +21,7 @@ describe("CreateTweetTest", function () {
                 done();
             });
     });
+});
 
     it("should return 200 if re-tweet is successful", (done) => {
         let ts = new Date().getTime();
@@ -35,11 +36,13 @@ describe("CreateTweetTest", function () {
     /*Unit test for like functionality
     By: Supriya Meduri
     */
+    describe("LikeTweet", function () {
     it("Should return 200 if favorite is successful", (done) => {
+        let tweet_id_created = {tweetId: '1309312507882795008'};
 
         chai
             .request(server)
-            .post("/tweets/like/" + tweet_id_created)
+            .post("/tweets/like/" + tweet_id_created.toString())
             .end((err, res) => {
                 res.should.have.status(200);
                 done();
