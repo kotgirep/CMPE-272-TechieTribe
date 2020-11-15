@@ -5,7 +5,6 @@ import {
   ModalBody,
   FormGroup,
   Label,
-  NavbarBrand,
 } from 'reactstrap';
 
 const photos = [
@@ -26,6 +25,7 @@ const initialState = {
   topX: '50%',
   bottomX: '50%',
   bottomY: '90%',
+  color: '#ff0000',
 };
 
 class MainPage extends React.Component {
@@ -61,6 +61,13 @@ class MainPage extends React.Component {
   changeText = (event) => {
     this.setState({
       [event.currentTarget.name]: event.currentTarget.value,
+      
+    });
+  };
+
+  changeColor = (event) => {
+    this.setState({
+      color: event.currentTarget.value
     });
   };
 
@@ -164,9 +171,11 @@ class MainPage extends React.Component {
       fontFamily: 'Impact',
       fontSize: '50px',
       textTransform: 'uppercase',
-      fill: '#FFF',
+      fill: [this.state.color],
       stroke: '#000',
       userSelect: 'none',
+    
+      
     };
 
     return (
@@ -263,6 +272,10 @@ class MainPage extends React.Component {
                   placeholder='Add text to the bottom'
                   onChange={this.changeText}
                 />
+              </FormGroup>
+              <FormGroup>
+                <Label for='color'>Text Color</Label>
+                <input className='form-control' type="color" name="color" onChange={this.changeColor} />
               </FormGroup>
               <button
                 onClick={() => this.convertSvgToImage()}
